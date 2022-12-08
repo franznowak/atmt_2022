@@ -1,0 +1,26 @@
+patience = 3:
+{
+ "name": "BLEU",
+ "score": 19.4,
+ "signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.3.1",
+ "verbose_score": "47.4/25.3/14.3/8.3 (BP = 1.000 ratio = 1.307 hyp_len = 5087 ref_len = 3892)",
+ "nrefs": "1",
+ "case": "mixed",
+ "eff": "no",
+ "tok": "13a",
+ "smooth": "exp",
+ "version": "2.3.1"
+}
+patience = 5:
+{
+ "name": "BLEU",
+ "score": 25.3,
+ "signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.3.1",
+ "verbose_score": "57.4/31.9/19.1/11.8 (BP = 1.000 ratio = 1.051 hyp_len = 4089 ref_len = 3892)",
+ "nrefs": "1",
+ "case": "mixed",
+ "eff": "no",
+ "tok": "13a",
+ "smooth": "exp",
+ "version": "2.3.1"
+}
