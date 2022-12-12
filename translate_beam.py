@@ -32,6 +32,8 @@ def get_args():
     parser.add_argument('--beam-size', default=5, type=int, help='number of hypotheses expanded in beam search')
     # alpha hyperparameter for length normalization (described as lp in https://arxiv.org/pdf/1609.08144.pdf equation 14)
     parser.add_argument('--alpha', default=0.0, type=float, help='alpha for softer length normalization')
+    # argument to switch to uid decoding as described in https://aclanthology.org/2020.emnlp-main.170
+    parser.add_argument('--uid-decoding', default=False, help='use uid decoding')
 
     return parser.parse_args()
 
@@ -44,6 +46,7 @@ def main(args):
     args_loaded = argparse.Namespace(**{**vars(state_dict['args']), **vars(args)})
     args = args_loaded
     utils.init_logging(args)
+    logging.getLogger().setLevel(logging.DEBUG)
 
     # Load dictionaries
     src_dict = Dictionary.load(os.path.join(args.dicts, 'dict.{:s}'.format(args.source_lang)))
@@ -106,6 +109,8 @@ def main(args):
                 next_word = torch.where(best_candidate == tgt_dict.unk_idx, backoff_candidate, best_candidate)
                 log_p = torch.where(best_candidate == tgt_dict.unk_idx, backoff_log_p, best_log_p)
                 log_p = log_p[-1]
+                if args.uid_decoding:
+                    log_p = log_p - 0.5*(log_p**2)
 
                 # Store the encoder_out information for the current input sentence and beam
                 emb = encoder_out['src_embeddings'][:,i,:]
@@ -161,6 +166,8 @@ def main(args):
                     next_word = torch.where(best_candidate == tgt_dict.unk_idx, backoff_candidate, best_candidate)
                     log_p = torch.where(best_candidate == tgt_dict.unk_idx, backoff_log_p, best_log_p)
                     log_p = log_p[-1]
+                    if args.uid_decoding:
+                        log_p = log_p - 0.5*(log_p**2)
                     next_word = torch.cat((prev_words[i][1:], next_word[-1:]))
 
                     # Get parent node and beam search object for corresponding sentence
