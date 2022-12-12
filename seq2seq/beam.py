@@ -54,6 +54,23 @@ class BeamSearch(object):
 
         return node
 
+    def get_n_best(self, n):
+        """ Returns n final nodes with the lowest negative log probabilities """
+        # Merge EOS paths and those that were stopped by
+        # max sequence length (still in nodes)
+        merged = PriorityQueue()
+        for _ in range(self.final.qsize()):
+            node = self.final.get()
+            merged.put(node)
+
+        for _ in range(self.nodes.qsize()):
+            node = self.nodes.get()
+            merged.put(node)
+
+        nodes = [(node[0], node[2]) for node in [merged.get() for _ in range(n)]]
+
+        return nodes
+
     def prune(self):
         """ Removes all nodes but the beam_size best ones (lowest neg log prob) """
         nodes = PriorityQueue()
